@@ -9,19 +9,19 @@ import Foundation
 import Alamofire
 import SwiftyJSON
 
-public class APIClient: APIClientProtocol {
+public class EKAPIClient: APIClientProtocol {
     
-    var networkEnvironment: NetworkEnvironmentProtocol!
-    var networkInterceptor: NetworkInterceptorProtocol?
+    public var networkEnvironment: NetworkEnvironmentProtocol!
+    public var networkInterceptor: NetworkInterceptorProtocol?
     
-    static var instance = APIClient(networkInterceptor: MyNetworkInterceptor())
+    static var instance = EKAPIClient(networkInterceptor: EKNetworkInterceptor())
     
     required init(networkInterceptor: NetworkInterceptorProtocol?) {
         self.networkInterceptor = networkInterceptor
     }
     
     /// Simply create your request by confirming Request protocol, then execute.
-    func execute<T: Request>(
+    public func execute<T: Request>(
         request: T,
         success: @escaping (T.Response) -> Void,
         failure: @escaping (APIError) -> Void
@@ -45,7 +45,7 @@ public class APIClient: APIClientProtocol {
             method: request.httpMethod,
             parameters: parameters,
             encoding: JSONEncoding.default,
-            headers: NetworkSession.shared.getHeaders(),
+            headers: EKNetworkSession.shared.getHeaders(),
             requestModifier: { $0.timeoutInterval = self.networkEnvironment.timeInterval }
         )
             .validate()
@@ -63,7 +63,7 @@ public class APIClient: APIClientProtocol {
     }
     
     /// Just feed your endPoint, then parse your JSON response, if not fails :) .
-    func executeGET<T: Decodable>(
+    public func executeGET<T: Decodable>(
         endPoint: String,
         success: @escaping (T) -> Void,
         failure: @escaping (APIError) -> Void
@@ -81,7 +81,7 @@ public class APIClient: APIClientProtocol {
             path,
             method: .get,
             encoding: JSONEncoding.default,
-            headers: NetworkSession.shared.getHeaders(),
+            headers: EKNetworkSession.shared.getHeaders(),
             requestModifier: { $0.timeoutInterval = self.networkEnvironment.timeInterval }
         )
             .validate()
@@ -100,7 +100,7 @@ public class APIClient: APIClientProtocol {
     }
     
     /// Prefer in case you do want to parse JSON manually.
-    func executeWithoutMapping<T: Request>(
+    public func executeWithoutMapping<T: Request>(
         request: T,
         success: @escaping (JSON) -> Void,
         failure: @escaping (APIError) -> Void
@@ -124,7 +124,7 @@ public class APIClient: APIClientProtocol {
             method: request.httpMethod,
             parameters: parameters,
             encoding: JSONEncoding.default,
-            headers: NetworkSession.shared.getHeaders(),
+            headers: EKNetworkSession.shared.getHeaders(),
             requestModifier: { $0.timeoutInterval = self.networkEnvironment.timeInterval }
         )
             .validate()
