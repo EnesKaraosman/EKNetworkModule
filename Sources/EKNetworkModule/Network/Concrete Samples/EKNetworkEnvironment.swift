@@ -13,7 +13,7 @@ public class EKNetworkEnvironment: NetworkEnvironmentProtocol {
     public let baseUrl: String
     public let timeInterval: TimeInterval
     
-    init(baseUrl: String, timeInterval: TimeInterval = 20) {
+    public init(baseUrl: String, timeInterval: TimeInterval = 20) {
         self.baseUrl = baseUrl
         self.timeInterval = timeInterval
     }
