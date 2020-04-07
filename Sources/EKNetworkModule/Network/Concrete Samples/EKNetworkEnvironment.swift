@@ -8,10 +8,10 @@
 
 import Foundation
 
-public class NetworkEnvironment: NetworkEnvironmentProtocol {
+public class EKNetworkEnvironment: NetworkEnvironmentProtocol {
     
-    let baseUrl: String
-    let timeInterval: TimeInterval
+    public let baseUrl: String
+    public let timeInterval: TimeInterval
     
     init(baseUrl: String, timeInterval: TimeInterval = 20) {
         self.baseUrl = baseUrl

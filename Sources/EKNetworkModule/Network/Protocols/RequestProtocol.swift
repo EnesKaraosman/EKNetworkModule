@@ -6,9 +6,10 @@
 //  Copyright © 2019 Enes Karaosman. All rights reserved.
 //
 
+import Foundation
 import Alamofire
 
-protocol Request: Encodable {
+public protocol Request: Encodable {
     associatedtype Response: Decodable
     var endPoint: String { get set }
     var httpMethod: HTTPMethod { get set }

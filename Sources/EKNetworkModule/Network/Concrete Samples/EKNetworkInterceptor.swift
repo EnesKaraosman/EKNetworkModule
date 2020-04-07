@@ -10,11 +10,10 @@ import Foundation
 import Alamofire
 import SwiftyJSON
 
-public class MyNetworkInterceptor: NetworkInterceptorProtocol {
+public class EKNetworkInterceptor: NetworkInterceptorProtocol {
     
     public func onBeforeRequest() {
         print("onBeforeRequest")
-//        self.showLoading()
     }
     
     public func onRequest(request: DataRequest) -> DataRequest {
@@ -39,12 +38,10 @@ public class MyNetworkInterceptor: NetworkInterceptorProtocol {
     
     public func onRequestComplete(response: DataResponse<Data, APIError>) {
         print("onRequestComplete")
-//        self.hideLoading()
     }
     
     public func onRequestComplete(response: DataResponse<Any, APIError>) {
         print("onRequestComplete")
-//        self.hideLoading()
     }
     
 }

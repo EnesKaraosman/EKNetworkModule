@@ -7,7 +7,7 @@
 
 import Foundation
 
-protocol NetworkEnvironmentProtocol: class {
+public protocol NetworkEnvironmentProtocol: class {
     var baseUrl: String { get }
     var timeInterval: TimeInterval { get }
 }

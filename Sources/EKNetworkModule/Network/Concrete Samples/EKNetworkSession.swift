@@ -9,9 +9,9 @@
 import Foundation
 import Alamofire
 
-class NetworkSession {
+class EKNetworkSession {
     
-    static let shared = NetworkSession()
+    static let shared = EKNetworkSession()
     
     var Authorization: String? = "" // Consider using .authenticate on AF.request
     var userName: String = "" // Taken from Auth service
