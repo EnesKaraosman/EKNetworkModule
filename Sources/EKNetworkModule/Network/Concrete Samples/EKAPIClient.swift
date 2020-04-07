@@ -16,7 +16,7 @@ public class EKAPIClient: APIClientProtocol {
     
     static var instance = EKAPIClient(networkInterceptor: EKNetworkInterceptor())
     
-    required init(networkInterceptor: NetworkInterceptorProtocol?) {
+    required public init(networkInterceptor: NetworkInterceptorProtocol?) {
         self.networkInterceptor = networkInterceptor
     }
     
