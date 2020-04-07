@@ -1,14 +1,23 @@
 # Network Module Usage
 
+For required protocol implementation, investigate Concrete Samples folder.
+I prefixed classes with EK to avoid name conflict.
+
 Firstly make sure you don't forget setting your environment (baseUrl). 
 
 AppDelegate is a good place to use.
 
+### Dependencies: Alamofire & SwiftyJSON
+
 ```swift
+
+import EKNetworkModule
+
 func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         
-    APIClient.instance.environment = NetworkEnvironment(
-       baseUrl: "https://www.mybaseurl.com/"
+    EKAPIClient.instance.environment = EKNetworkEnvironment(
+       baseUrl: "https://www.mybaseurl.com/",
+       timeInterval: 20 // Default
     )
 
     return true
@@ -20,6 +29,8 @@ func application(_ application: UIApplication, didFinishLaunchingWithOptions lau
 To create (generate) your Request (post methods) and Response models you can use online tools like *https://app.quicktype.io/*
 
 You basically give your sample JSON to tool and it gives back to you Auto-Generated swift class model. (Including nested instances)
+
+Make sure you add Codable options as well.
 
 Lets create a model together.
 
@@ -97,11 +108,11 @@ Use **APIClient** instance, required methods are already implemented.
 
 ## Request Samples
 
-* ##### GET
+* ##### POST, GET
 
 ```swift
 let request = MyRequestObject()
-APIClient.instance.execute(
+EKAPIClient.instance.execute(
     request: request,
     success: { (myResponseObjectModel) in
         
@@ -116,7 +127,7 @@ You don't need to create Request object for **GET** requests.
 You can just jump right into request.
 
 ```swift
-APIClient.instance.executeGET(
+EKAPIClient.instance.executeGET(
     endPoint: "articles", 
     success: { (articles: [Article]) in
         print(articles.count)
@@ -126,13 +137,5 @@ APIClient.instance.executeGET(
         // Handle error
     })
 ```
-
-* ##### POST
-
-No difference from GET request, you can use 
-```APIClient.instance.execute()``` 
-method with any *Request* object, just make sure you set 
-```httpMethod = .post``` 
-in request that's it.
 
 
