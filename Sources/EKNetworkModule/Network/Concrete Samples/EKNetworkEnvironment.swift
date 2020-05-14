@@ -11,6 +11,7 @@ import Foundation
 public class EKNetworkEnvironment: NetworkEnvironmentProtocol {
     
     public let baseUrl: String
+    public var tempBaseUrl: String?
     public let timeInterval: TimeInterval
     
     public init(baseUrl: String, timeInterval: TimeInterval = 20) {

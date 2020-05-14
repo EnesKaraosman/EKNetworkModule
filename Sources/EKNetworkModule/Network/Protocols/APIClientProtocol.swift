@@ -35,5 +35,7 @@ public protocol APIClientProtocol: class {
     )
     
     init(networkInterceptor: NetworkInterceptorProtocol?)
+    
+    func ovverideBaseUrlOnce(baseUrl: String) -> APIClientProtocol
 
 }

@@ -14,7 +14,7 @@ public class EKAPIClient: APIClientProtocol {
     public var networkEnvironment: NetworkEnvironmentProtocol!
     public var networkInterceptor: NetworkInterceptorProtocol?
     
-    public static var instance = EKAPIClient(networkInterceptor: EKNetworkInterceptor())
+    public static var shared = EKAPIClient(networkInterceptor: EKNetworkInterceptor())
     
     required public init(networkInterceptor: NetworkInterceptorProtocol?) {
         self.networkInterceptor = networkInterceptor
@@ -27,18 +27,20 @@ public class EKAPIClient: APIClientProtocol {
         failure: @escaping (APIError) -> Void
     ) {
         
-        guard !networkEnvironment.baseUrl.isEmpty else {
+        guard let baseUrl = self.getBaseUrl() else {
             print("‼️ Error: Environment not configured!")
             failure(.custom(message: "Environment not configured!"))
             return
         }
         
-        let path = networkEnvironment.baseUrl.appending(request.endPoint)
+        let path = baseUrl.appending(request.endPoint)
         
         guard let parameters = getParameters(request: request) else {
             failure(.custom(message: "‼️ Request parameter serialization failed!"))
             return
         }
+        
+        defer { self.flushTempBaseUrl() }
         
         AF.request(
             path,
@@ -48,17 +50,17 @@ public class EKAPIClient: APIClientProtocol {
             headers: EKNetworkSession.shared.getHeaders(),
             requestModifier: { $0.timeoutInterval = self.networkEnvironment.timeInterval }
         )
-            .validate()
-            .responseDecodable(of: T.Response.self, completionHandler: { (responseData) in
-                
-                switch responseData.result {
-                case .success(let value):
-                    success(value)
-                case .failure(let error):
-                    failure(.network(internal: error))
-                }
-                
-            })
+        .validate()
+        .responseDecodable(of: T.Response.self, completionHandler: { (responseData) in
+            
+            switch responseData.result {
+            case .success(let value):
+                success(value)
+            case .failure(let error):
+                failure(.network(internal: error))
+            }
+            
+        })
         
     }
     
@@ -69,13 +71,15 @@ public class EKAPIClient: APIClientProtocol {
         failure: @escaping (APIError) -> Void
     ) {
         
-        guard !networkEnvironment.baseUrl.isEmpty else {
+        guard let baseUrl = self.getBaseUrl() else {
             print("‼️ Error: Environment not configured!")
             failure(.custom(message: "Environment not configured!"))
             return
         }
         
-        let path = networkEnvironment.baseUrl.appending(endPoint)
+        let path = baseUrl.appending(endPoint)
+        
+        defer { self.flushTempBaseUrl() }
         
         AF.request(
             path,
@@ -84,18 +88,17 @@ public class EKAPIClient: APIClientProtocol {
             headers: EKNetworkSession.shared.getHeaders(),
             requestModifier: { $0.timeoutInterval = self.networkEnvironment.timeInterval }
         )
-            .validate()
-            .responseDecodable(of: T.self) { (responseData) in
-                
-                switch responseData.result {
-                case .success(let value):
-                    success(value)
-                case .failure(let error):
-                    failure(.network(internal: error))
-                }
+        .validate()
+        .responseDecodable(of: T.self) { (responseData) in
+            
+            switch responseData.result {
+            case .success(let value):
+                success(value)
+            case .failure(let error):
+                failure(.network(internal: error))
+            }
                 
         }
-        
         
     }
     
@@ -106,18 +109,20 @@ public class EKAPIClient: APIClientProtocol {
         failure: @escaping (APIError) -> Void
     ) {
         
-        guard !networkEnvironment.baseUrl.isEmpty else {
+        guard let baseUrl = self.getBaseUrl() else {
             print("‼️ Error: Environment not configured!")
             failure(.custom(message: "Environment not configured!"))
             return
         }
         
-        let path = networkEnvironment.baseUrl.appending(request.endPoint)
+        let path = baseUrl.appending(request.endPoint)
         
         guard let parameters = getParameters(request: request) else {
             failure(.custom(message: "‼️ Request parameter serialization failed!"))
             return
         }
+        
+        defer { self.flushTempBaseUrl() }
         
         AF.request(
             path,
@@ -127,16 +132,16 @@ public class EKAPIClient: APIClientProtocol {
             headers: EKNetworkSession.shared.getHeaders(),
             requestModifier: { $0.timeoutInterval = self.networkEnvironment.timeInterval }
         )
-            .validate()
-            .responseJSON { (responseObject) in
-                
-                switch responseObject.result {
-                case .success(let value):
-                    let json = JSON(value)
-                    success(json)
-                case .failure(let error):
-                    failure(.network(internal: error))
-                }
+        .validate()
+        .responseJSON { (responseObject) in
+            
+            switch responseObject.result {
+            case .success(let value):
+                let json = JSON(value)
+                success(json)
+            case .failure(let error):
+                failure(.network(internal: error))
+            }
         }
         
     }
@@ -152,4 +157,23 @@ public class EKAPIClient: APIClientProtocol {
         return nil
     }
     
+    public func ovverideBaseUrlOnce(baseUrl: String) -> APIClientProtocol {
+        (self.networkEnvironment as? EKNetworkEnvironment)?.tempBaseUrl = baseUrl
+        return self
+    }
+    
+    private func getBaseUrl() -> String? {
+        
+        if let tempBaseUrl = (self.networkEnvironment as? EKNetworkEnvironment)?.tempBaseUrl {
+            return tempBaseUrl
+        } else {
+            return self.networkEnvironment?.baseUrl
+        }
+        
+    }
+    
+    private func flushTempBaseUrl() {
+        (self.networkEnvironment as? EKNetworkEnvironment)?.tempBaseUrl = nil
+    }
+        
 }
