@@ -15,7 +15,7 @@ import EKNetworkModule
 
 func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         
-    EKAPIClient.instance.environment = EKNetworkEnvironment(
+    EKAPIClient.shared.environment = EKNetworkEnvironment(
        baseUrl: "https://www.mybaseurl.com/",
        timeInterval: 20 // Default
     )
@@ -112,7 +112,7 @@ Use **APIClient** instance, required methods are already implemented.
 
 ```swift
 let request = MyRequestObject()
-EKAPIClient.instance.execute(
+EKAPIClient.shared.execute(
     request: request,
     success: { (myResponseObjectModel) in
         
@@ -127,7 +127,7 @@ You don't need to create Request object for **GET** requests.
 You can just jump right into request.
 
 ```swift
-EKAPIClient.instance.executeGET(
+EKAPIClient.shared.executeGET(
     endPoint: "articles", 
     success: { (articles: [Article]) in
         print(articles.count)
@@ -139,3 +139,14 @@ EKAPIClient.instance.executeGET(
 ```
 
 
+### Extra
+
+#### Question: What if I want to make a request to another baseUrl
+
+Answer: Use `ovverideBaseUrlOnce(baseUrl: String)` method to achieve.
+
+```swift
+EKAPIClient.shared
+    .ovverideBaseUrlOnce(baseUrl: "https://api.temproary-base-url.com/")
+    .execute()
+```
