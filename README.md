@@ -141,7 +141,14 @@ EKAPIClient.shared.executeGET(
 
 ### Extra
 
-#### Question: What if I want to make a request to another baseUrl
+#### Question: I want to handle presenting/dismissin loader for every request, is there an easy way to do this?
+
+Answer: Implement `NetworkInterceptorProtocol` & inject in `APIClientProtocol` concrete class <br> 
+`NetworkInterceptorProtocol` includes `onBeforeRequest` & `onRequestCompleted` methods, you can do proper setup.
+
+<hr>
+
+#### Question: What if I want to make a request to another baseUrl?
 
 Answer: Use `ovverideBaseUrlOnce(baseUrl: String)` method to achieve, after this request the url you set first (in `AppDelegate` is activated again)
 
