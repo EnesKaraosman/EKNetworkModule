@@ -6,19 +6,10 @@
 //  Copyright © 2020 Enes Karaosman. All rights reserved.
 //
 
-import Foundation
-import Alamofire
-import SwiftyJSON
+import protocol Alamofire.RequestInterceptor
+import struct SwiftyJSON.JSON
 
-public protocol NetworkInterceptorProtocol {
+public protocol NetworkInterceptorProtocol: RequestInterceptor {
     func onBeforeRequest()
-    func onRequest(request: DataRequest) -> DataRequest
-
-    func onRequestSuccess(data: Data) -> Data //
-    func onRequestSuccess(json: JSON) -> JSON // Without mapping
-
-    func onRequestFailure(error: Error) -> Error
-
-    func onRequestComplete(response: DataResponse<Data, APIError>)
-    func onRequestComplete(response: DataResponse<Any, APIError>)
+    func onRequestCompleted()
 }

@@ -143,7 +143,7 @@ EKAPIClient.shared.executeGET(
 
 #### Question: What if I want to make a request to another baseUrl
 
-Answer: Use `ovverideBaseUrlOnce(baseUrl: String)` method to achieve.
+Answer: Use `ovverideBaseUrlOnce(baseUrl: String)` method to achieve, after this request the url you set first (in `AppDelegate` is activated again)
 
 ```swift
 EKAPIClient.shared

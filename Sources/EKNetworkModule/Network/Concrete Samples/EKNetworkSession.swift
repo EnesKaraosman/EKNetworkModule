@@ -13,13 +13,8 @@ class EKNetworkSession {
     
     static let shared = EKNetworkSession()
     
-    var Authorization: String? = "" // Consider using .authenticate on AF.request
-    var userName: String = "" // Taken from Auth service
-    
     func getHeaders() -> HTTPHeaders {
         return [
-//          .authorization(username: "Username", password: "Password"),
-//          .authorization(bearerToken: ""),
             .accept("application/json")
         ]
     }

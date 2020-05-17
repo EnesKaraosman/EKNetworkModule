@@ -16,32 +16,8 @@ public class EKNetworkInterceptor: NetworkInterceptorProtocol {
         print("onBeforeRequest")
     }
     
-    public func onRequest(request: DataRequest) -> DataRequest {
-        print("onRequest")
-        return request
-    }
-    
-    public func onRequestSuccess(data: Data) -> Data {
-        print("onRequestSuccess")
-        return data
-    }
-    
-    public func onRequestSuccess(json: JSON) -> JSON {
-        print("onRequestSuccess")
-        return json
-    }
-    
-    public func onRequestFailure(error: Error) -> Error {
-        print("‼️ Error: onRequestFailure")
-        return error
-    }
-    
-    public func onRequestComplete(response: DataResponse<Data, APIError>) {
-        print("onRequestComplete")
-    }
-    
-    public func onRequestComplete(response: DataResponse<Any, APIError>) {
-        print("onRequestComplete")
+    public func onRequestCompleted() {
+        print("onRequestCompleted")
     }
     
 }
