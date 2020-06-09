@@ -157,7 +157,7 @@ public class EKAPIClient: APIClientProtocol {
         return nil
     }
     
-    public func ovverideBaseUrlOnce(baseUrl: String) -> APIClientProtocol {
+    public func overrideBaseUrlOnce(baseUrl: String) -> APIClientProtocol {
         (self.networkEnvironment as? EKNetworkEnvironment)?.tempBaseUrl = baseUrl
         return self
     }
