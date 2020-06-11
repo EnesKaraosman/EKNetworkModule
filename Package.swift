@@ -17,7 +17,7 @@ let package = Package(
     dependencies: [
         // Dependencies declare other packages that this package depends on.
         // .package(url: /* package url */, from: "1.0.0"),
-        .package(url: "https://github.com/Alamofire/Alamofire.git", from: "5.1.0"),
+        .package(url: "https://github.com/Alamofire/Alamofire.git", from: "5.2.1"),
         .package(url: "https://github.com/SwiftyJSON/SwiftyJSON.git", from: "5.0.0")
     ],
     targets: [
