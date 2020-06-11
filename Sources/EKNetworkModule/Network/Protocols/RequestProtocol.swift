@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import Alamofire
+import struct Alamofire.HTTPMethod
 
 public protocol Request: Encodable {
     associatedtype Response: Decodable

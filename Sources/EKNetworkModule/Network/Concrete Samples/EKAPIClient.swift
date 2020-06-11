@@ -9,6 +9,11 @@ import Foundation
 import Alamofire
 import SwiftyJSON
 
+public enum APIError: Error {
+    case environmentNotConfigured
+    case requestParameterSerializationFailed
+}
+
 public class EKAPIClient: APIClientProtocol {
     
     public var networkEnvironment: NetworkEnvironmentProtocol!
@@ -24,23 +29,26 @@ public class EKAPIClient: APIClientProtocol {
     public func execute<T: Request>(
         request: T,
         success: @escaping (T.Response) -> Void,
-        failure: @escaping (APIError) -> Void
+        failure: @escaping (Error) -> Void
     ) {
         
         guard let baseUrl = self.getBaseUrl() else {
             print("‼️ Error: Environment not configured!")
-            failure(.custom(message: "Environment not configured!"))
+            failure(APIError.environmentNotConfigured)
             return
         }
         
         let path = baseUrl.appending(request.endPoint)
         
         guard let parameters = getParameters(request: request) else {
-            failure(.custom(message: "‼️ Request parameter serialization failed!"))
+            print("‼️ Request parameter serialization failed!")
+            failure(APIError.requestParameterSerializationFailed)
             return
         }
         
         defer { self.flushTempBaseUrl() }
+        
+        self.networkInterceptor?.onBeforeRequest()
         
         AF.request(
             path,
@@ -48,16 +56,19 @@ public class EKAPIClient: APIClientProtocol {
             parameters: parameters,
             encoding: JSONEncoding.default,
             headers: EKNetworkSession.shared.getHeaders(),
+            interceptor: networkInterceptor,
             requestModifier: { $0.timeoutInterval = self.networkEnvironment.timeInterval }
         )
         .validate()
         .responseDecodable(of: T.Response.self, completionHandler: { (responseData) in
             
+            self.networkInterceptor?.onRequestCompleted()
+            
             switch responseData.result {
             case .success(let value):
                 success(value)
             case .failure(let error):
-                failure(.network(internal: error))
+                failure(error)
             }
             
         })
@@ -68,12 +79,12 @@ public class EKAPIClient: APIClientProtocol {
     public func executeGET<T: Decodable>(
         endPoint: String,
         success: @escaping (T) -> Void,
-        failure: @escaping (APIError) -> Void
+        failure: @escaping (Error) -> Void
     ) {
         
         guard let baseUrl = self.getBaseUrl() else {
             print("‼️ Error: Environment not configured!")
-            failure(.custom(message: "Environment not configured!"))
+            failure(APIError.environmentNotConfigured)
             return
         }
         
@@ -81,21 +92,26 @@ public class EKAPIClient: APIClientProtocol {
         
         defer { self.flushTempBaseUrl() }
         
+        self.networkInterceptor?.onBeforeRequest()
+        
         AF.request(
             path,
             method: .get,
             encoding: JSONEncoding.default,
             headers: EKNetworkSession.shared.getHeaders(),
+            interceptor: networkInterceptor,
             requestModifier: { $0.timeoutInterval = self.networkEnvironment.timeInterval }
         )
         .validate()
         .responseDecodable(of: T.self) { (responseData) in
             
+            self.networkInterceptor?.onRequestCompleted()
+            
             switch responseData.result {
             case .success(let value):
                 success(value)
             case .failure(let error):
-                failure(.network(internal: error))
+                failure(error)
             }
                 
         }
@@ -106,23 +122,26 @@ public class EKAPIClient: APIClientProtocol {
     public func executeWithoutMapping<T: Request>(
         request: T,
         success: @escaping (JSON) -> Void,
-        failure: @escaping (APIError) -> Void
+        failure: @escaping (Error) -> Void
     ) {
         
         guard let baseUrl = self.getBaseUrl() else {
             print("‼️ Error: Environment not configured!")
-            failure(.custom(message: "Environment not configured!"))
+            failure(APIError.environmentNotConfigured)
             return
         }
         
         let path = baseUrl.appending(request.endPoint)
         
         guard let parameters = getParameters(request: request) else {
-            failure(.custom(message: "‼️ Request parameter serialization failed!"))
+            print("‼️ Request parameter serialization failed!")
+            failure(APIError.requestParameterSerializationFailed)
             return
         }
         
         defer { self.flushTempBaseUrl() }
+        
+        self.networkInterceptor?.onBeforeRequest()
         
         AF.request(
             path,
@@ -130,17 +149,20 @@ public class EKAPIClient: APIClientProtocol {
             parameters: parameters,
             encoding: JSONEncoding.default,
             headers: EKNetworkSession.shared.getHeaders(),
+            interceptor: networkInterceptor,
             requestModifier: { $0.timeoutInterval = self.networkEnvironment.timeInterval }
         )
         .validate()
         .responseJSON { (responseObject) in
+            
+            self.networkInterceptor?.onRequestCompleted()
             
             switch responseObject.result {
             case .success(let value):
                 let json = JSON(value)
                 success(json)
             case .failure(let error):
-                failure(.network(internal: error))
+                failure(error)
             }
         }
         
