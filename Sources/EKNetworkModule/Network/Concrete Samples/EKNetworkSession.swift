@@ -9,19 +9,16 @@
 import Foundation
 import Alamofire
 
-class EKNetworkSession {
+public class EKNetworkSession {
     
-    static let shared = EKNetworkSession()
+    public static let shared = EKNetworkSession()
     
-    var Authorization: String? = "" // Consider using .authenticate on AF.request
-    var userName: String = "" // Taken from Auth service
+    public var headers: HTTPHeaders = [
+        .accept("application/json")
+    ]
     
-    func getHeaders() -> HTTPHeaders {
-        return [
-//          .authorization(username: "Username", password: "Password"),
-//          .authorization(bearerToken: ""),
-            .accept("application/json")
-        ]
+    public func getHeaders() -> HTTPHeaders {
+        return headers
     }
     
     private init() { }
