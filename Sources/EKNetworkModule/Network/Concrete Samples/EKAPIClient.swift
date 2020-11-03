@@ -14,7 +14,7 @@ public enum APIError: Error {
     case requestParameterSerializationFailed
 }
 
-public class EKAPIClient: APIClientProtocol {
+public final class EKAPIClient: NSObject, APIClientProtocol {
     
     public var networkEnvironment: NetworkEnvironmentProtocol!
     public var networkInterceptor: NetworkInterceptorProtocol?

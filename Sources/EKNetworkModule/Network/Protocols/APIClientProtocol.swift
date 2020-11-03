@@ -10,7 +10,7 @@ import Foundation
 import SwiftyJSON
 import Alamofire
 
-public protocol APIClientProtocol: class {
+public protocol APIClientProtocol: class, NSObjectProtocol {
     
     var networkEnvironment: NetworkEnvironmentProtocol! { get }
     
